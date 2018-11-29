@@ -1,4 +1,4 @@
-require('pantallas/encajando')
+require('pantallas/buscando_alturas')
 require('clases/texto')
 require('clases/formas')
 
@@ -18,9 +18,9 @@ local cfg = {
 }
 
 local opciones = {
+  {"Buscando alturas", buscando_alturas},
   {"Areas", menu},
-  {"Areas", menu},
-  {"Encajando", encajando},
+  {"Encajando", menu},
   {"Areas", menu}
 }
 
