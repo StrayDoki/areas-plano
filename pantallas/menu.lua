@@ -3,6 +3,7 @@
 ---------------
 require('pantallas/buscando_alturas')
 require('pantallas/encajando')
+require('pantallas/areas_coordenadas')
 
 require('clases/texto')
 require('clases/formas')
@@ -24,9 +25,9 @@ local cfg = {
 
 local opciones = {
   {"Buscando alturas", buscando_alturas},
-  {"Areas", menu},
+  {"Areas", areas_coordenadas},
   {"Encajando", encajando},
-  {"Areas", menu}
+  {"No", menu}
 }
 
 local botones
@@ -40,7 +41,7 @@ function menu.load()
   for i=1, cfg.filas do
     for j=1, cfg.columnas do
       local width = (love.graphics.getWidth() - cfg.separacion*(cfg.columnas + 1))/cfg.columnas
-      local height = (love.graphics.getHeight()-cfg.alturaTitulo - cfg.separacion*(cfg.filas+1))/cfg.filas
+      local height = (love.graphics.getHeight() - cfg.alturaTitulo - cfg.separacion*(cfg.filas+1))/cfg.filas
       local x = cfg.separacion*j + width*(j-1)
       local y = cfg.alturaTitulo + cfg.separacion*i + height*(i-1)
       botones[#botones+1] =
