@@ -77,9 +77,12 @@ function crearBoton(x,y,width,height,color,texto,size,textoColor,borde,bordeColo
     texto = texto,
     size = size,
     textoColor = textoColor,
-    borde = borde,
-    recuerdaBorde = borde,
-    bordeColor = bordeColor,
+    borde = borde or 3,
+    bordeColor = bordeColor or color,
+    recuerda = {
+      textoColor = textoColor,
+      bordeColor = bordeColor or color,
+    }
   }
 
   function boton.draw()
@@ -99,14 +102,12 @@ function crearBoton(x,y,width,height,color,texto,size,textoColor,borde,bordeColo
     if boton.estaSeleccionado(curX, curY)
     then
       bordeColor = boton.color
-      borde = boton.recuerdaBorde
       color = {1,1,1,1}
       textoColor = boton.color
     else
-      borde = 0
       color = boton.color
-      bordeColor = {1,1,1,1}
-      textoColor = {1,1,1,1}
+      bordeColor = boton.recuerda.bordeColor
+      textoColor = boton.recuerda.textoColor
     end
   end
 

@@ -1,4 +1,4 @@
---PANTALLA DONDE LOS ESTUDIANTES TIENEN UNA FIGURA Y ENCAJAN
+--PANTALLA DONDE LOS ESTUDIANTES TIENEN UN TRIANGULO Y UBICAN LA ALTURA
 buscando_alturas = {}
 
 --ESTATICOS
@@ -9,7 +9,25 @@ local cfg = {
     linea = {1,0,0},
     base = {0.5,0.5,1},
     punto = {1,0,0},
-    texto = {0,0,0}
+    texto = {0,0,0},
+    caja = {
+      titulo = {
+        fondo = {1,1,1},
+        texto = {0,0,0}
+      },
+      correcto = {
+        fondo = {0,0.7,0},
+        texto = {1,1,1}
+      },
+      incorrecto = {
+        fondo = {1,0,0},
+        texto = {1,1,1}
+      },
+      felicitaciones = {
+        fondo = {0.4,1,0.4},
+        texto = {0,0,0}
+      }
+    }
   },
   texto = {
     tamaño = 40,
@@ -17,7 +35,8 @@ local cfg = {
     mensaje_mismo = [[El mismo triángulo pero usemos otra base]],
     mensaje_adicional = [[Ahora de este otro triángulo]],
     mensaje_felicitaciones = [[¡Lo lograste!]],
-    correcto = [[¡Muy bien!]]
+    correcto = [[¡Muy bien!]],
+    incorrecto = [[Intenta de nuevo]],
   },
   plantilla = {
     top = 100
@@ -53,6 +72,7 @@ local triangulos = {
   }
 }
 
+--DINAMICOS
 local triangulo_actual
 local tipo_base
 local base
@@ -62,6 +82,9 @@ local puntos
 local estado
 local mensaje
 local corregir_texto_base
+local color_caja_fondo
+local color_caja_texto
+local boton_atras
 
 ----------
 -- LOAD --
@@ -75,12 +98,30 @@ function buscando_alturas.load ()
 
   -- ASIGNANDO TITULO
   mensaje = cfg.texto.mensaje_principal
+  color_caja_fondo = cfg.color.caja.titulo.fondo
+  color_caja_texto = cfg.color.caja.titulo.texto
 
   -- TRIANGULO QUE SE MUESTRA
   triangulo_actual = 1
   tipo_base = 2
   corregir_texto_base = 1
   altura = calcular_altura(triangulos[triangulo_actual])
+
+  -- CREAR BOTON ATRAS
+  local distancia = 50
+  local boton_ancho = 150
+  local boton_largo = 80
+  boton_atras = crearBoton(
+    love.graphics.getWidth() - distancia - boton_ancho,
+    love.graphics.getHeight() - distancia - boton_largo,
+    boton_ancho,
+    boton_largo,
+    {0.2,0.2,0.2}, -- color de fondo
+    "ATRAS",
+    40, -- tamaño de texto
+    {1,1,1}, --color de texto
+    8
+  )
 end
 
 ----------
@@ -88,12 +129,15 @@ end
 ----------
 function buscando_alturas.draw()
   --DIBUJANDO TEXTO
-  dibujarTexto(
+  dibujarCaja(
+    0,
+    0,
+    love.graphics.getWidth(),
+    cfg.plantilla.top,
+    color_caja_fondo,
     mensaje,
-    love.graphics.getWidth()/2,
-    cfg.plantilla.top/2,
     cfg.texto.tamaño,
-    cfg.color.texto
+    color_caja_texto
   )
   
   --DIBUJANDO TRIANGULO
@@ -137,13 +181,41 @@ function buscando_alturas.draw()
   dibujarTexto(
     "base",
     calcular_distancia(base.x1,base.y1,base.x2,base.y2)/2,
-    corregir_texto_base * 40,
+    corregir_texto_base * 30,
     cfg.texto.tamaño,
     cfg.color.base
   )
   love.graphics.pop()
   
+  --DIBUJANDO TEXTO DE ALTURA
+  if estado == "correcto" then
+    love.graphics.push()
+    love.graphics.translate(vertice.x,vertice.y)
+    love.graphics.rotate(
+      math.atan2(altura.y-vertice.y,altura.x-vertice.x)
+    )
+    dibujarTexto(
+      "altura",
+      calcular_distancia(vertice.x,vertice.y,altura.x,altura.y)/2,
+      corregir_texto_base * 30,
+      cfg.texto.tamaño,
+      cfg.color.linea
+    )
+    love.graphics.pop()
+  end
+
+  --DIBUJANDO BOTON
+  boton_atras.draw()
 end
+
+------------
+-- UPDATE --
+------------
+function buscando_alturas.update(dt)
+  --ACTUALIZA BOTON
+  boton_atras.update(love.mouse.getX(), love.mouse.getY())
+end
+
 
 -------------------
 -- MOUSE PRESSED --
@@ -186,21 +258,38 @@ function buscando_alturas.mousepressed(x,y)
       (puntos[1].x == vertice.x and puntos[1].y == vertice.y and
       puntos[2].x == altura.x and puntos[2].y == altura.y)
       then
+        -- CORRECTO!
         mensaje = cfg.texto.correcto --y cambia el texto
+        color_caja_fondo = cfg.color.caja.correcto.fondo
+        color_caja_texto = cfg.color.caja.correcto.texto
         estado = "correcto"
+      else
+        -- INCORRECTO!
+        mensaje = cfg.texto.incorrecto --cambia el texto
+        color_caja_fondo = cfg.color.caja.incorrecto.fondo
+        color_caja_texto = cfg.color.caja.incorrecto.texto
       end
     end
   elseif estado == "correcto" then
     if triangulo_actual == #triangulos then
+      -- FELICITACIONES
       mensaje = cfg.texto.mensaje_felicitaciones
+      color_caja_fondo = cfg.color.caja.felicitaciones.fondo
+      color_caja_texto = cfg.color.caja.felicitaciones.texto
     else
       puntos = {} -- borra los puntos
       triangulo_actual = triangulo_actual+1 -- cambia el triangulo
+
+      --NUEVO TRIANGULO
       if triangulo_actual == 2 or triangulo_actual == 4 then
         mensaje = cfg.texto.mensaje_mismo --cambia el mensaje
       else
         mensaje = cfg.texto.mensaje_adicional
       end
+
+      color_caja_fondo = cfg.color.caja.titulo.fondo
+      color_caja_texto = cfg.color.caja.titulo.texto
+      
       if triangulo_actual == 2 then -- correccion por si el texto base sale debajo
         tipo_base = 3
         corregir_texto_base = -1
@@ -212,7 +301,16 @@ function buscando_alturas.mousepressed(x,y)
       estado = "pregunta" -- cambia el estado
     end
   end
+
+  -- SI SE PRESIONA EL BOTON ATRAS
+  if boton_atras.estaSeleccionado(x,y) then
+    cambiarPantalla(menu)
+  end
 end
+
+---------------------------
+-- FUNCIONES ADICIONALES --
+---------------------------
 
 --CALCULA DISTANCIA ENTRE DOS PUNTOS
 function calcular_distancia(x1,y1,x2,y2)
