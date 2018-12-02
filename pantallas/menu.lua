@@ -2,8 +2,8 @@
 -- PANTALLAS --
 ---------------
 require('pantallas/buscando_alturas')
-require('pantallas/encajando')
 require('pantallas/areas_coordenadas')
+require('pantallas/formando')
 
 require('clases/texto')
 require('clases/formas')
@@ -26,7 +26,7 @@ local cfg = {
 local opciones = {
   {"Buscando alturas", buscando_alturas},
   {"Areas", areas_coordenadas},
-  {"Encajando", encajando},
+  {"Formando", formando},
   {"No", menu}
 }
 
