@@ -25,10 +25,10 @@ local cfg = {
 }
 
 local opciones = {
+  {"El robot", formando},
   {"Buscando alturas", buscando_alturas},
   {"Areas", areas_coordenadas},
-  {"Dividiendo", dividiendo},
-  {"Formando", formando}
+  {"Dividiendo", dividiendo}
 }
 
 local botones

@@ -12,6 +12,10 @@ local puntos_iniciales = {
     {x = 4, y = 2},
     {x = 8, y = 3},
     {x = 12, y = 10},
+  },
+  circulo = {
+    {x = 6, y = 6},
+    {x = 11, y = 6}
   }
 }
 local distancia = 50
@@ -24,6 +28,7 @@ local lineas
 local area
 local boton_triangulo
 local boton_cuadrilatero
+local boton_circulo
 local boton_atras
 
 function areas_coordenadas.load()
@@ -45,7 +50,7 @@ function areas_coordenadas.load()
     16 * distancia,
     4 * distancia,
     3 * distancia,
-    2 * distancia,
+    1 * distancia,
     {1,0.2,0.2},
     "TRIANGULO",
     18,
@@ -55,11 +60,23 @@ function areas_coordenadas.load()
 
   boton_cuadrilatero = crearBoton(
     16 * distancia,
-    7 * distancia,
+    6 * distancia,
     3 * distancia,
-    2 * distancia,
+    1 * distancia,
     {0.2,0.2,1},
     "CUADRILATERO",
+    18,
+    {1,1,1},
+    4
+  )
+
+  boton_circulo = crearBoton(
+    16 * distancia,
+    8 * distancia,
+    3 * distancia,
+    1 * distancia,
+    {0.2,0.5,0.5},
+    "CÍRCULO",
     18,
     {1,1,1},
     4
@@ -95,6 +112,7 @@ function areas_coordenadas.draw()
   -- DIBUJANDO BOTON
   boton_triangulo.draw()
   boton_cuadrilatero.draw()
+  boton_circulo.draw()
   boton_atras.draw()
   
   -- DIBUJANDO POLÍGONO
@@ -103,6 +121,12 @@ function areas_coordenadas.draw()
   for i = 1, #puntos do
     local sgte = i % #puntos + 1
     love.graphics.line(puntos[i].x * distancia,puntos[i].y * distancia,puntos[sgte].x * distancia,puntos[sgte].y*distancia)
+  end
+  if figura_actual == "circulo" then
+    love.graphics.circle(
+      "line",puntos[1].x * distancia,puntos[1].y * distancia,
+      math.sqrt((puntos[1].x - puntos[2].x)^2 + (puntos[1].y - puntos[2].y)^2 ) * distancia
+    )
   end
 
   -- DIBUJANDO PUNTOS
@@ -130,13 +154,18 @@ function areas_coordenadas.update(dt)
     elseif estado == "siguiendo" then
       puntos[i].x = math.floor ( (love.mouse.getX()+distancia/2) / distancia)
       puntos[i].y = math.floor ( (love.mouse.getY()+distancia/2) /distancia)
-      area = calcular_area()
+      if figura_actual ~= "circulo" then
+        area = calcular_area()
+      else
+        area = ( (puntos[1].x - puntos[2].x)^2 + (puntos[1].y - puntos[2].y)^2 ) .. "π"  
+      end
     end
   end
 
   -- BOTON CAMBIA DE COLOR SI ESTA SELECCIONADO
   boton_triangulo.update(love.mouse.getX(), love.mouse.getY())
   boton_cuadrilatero.update(love.mouse.getX(), love.mouse.getY())
+  boton_circulo.update(love.mouse.getX(), love.mouse.getY())
   boton_atras.update(love.mouse.getX(), love.mouse.getY())
 end
 
@@ -177,6 +206,19 @@ function areas_coordenadas.mousepressed(x,y)
     end
 
     area = calcular_area()  
+  end
+
+  if boton_circulo.estaSeleccionado(x,y) then
+    puntos = {}
+    figura_actual = "circulo"
+    
+    -- CREANDO PUNTOS INICIALES
+    for i = 1, #puntos_iniciales.circulo do
+      puntos[i] = puntos_iniciales.circulo[i]
+      puntos[i].estado = "reposo"
+    end
+
+    area = ( (puntos[1].x - puntos[2].x)^2 + (puntos[1].y - puntos[2].y)^2 ) .. "π"  
   end
 
   if boton_atras.estaSeleccionado(x,y) then

@@ -72,6 +72,7 @@ end
 -- DRAW --
 ----------
 function  encajando.draw()
+
   -- DIBUJAR FIGURA
   love.graphics.setLineWidth(5)
   love.graphics.setColor(0,0,0)

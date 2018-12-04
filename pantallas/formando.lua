@@ -2,16 +2,20 @@ formando = {}
 
 -- ESTATICOS --
 local posiciones_respuesta = {
-  {x = 0, y = 0},
-  {x = 315, y = 0},
+  {x = 484, y = 172},
+  {x = 553, y = 202},
+  {x = 416, y = 202},
+  {x = 554, y = 281},
+  {x = 415, y = 281},
+  {x = 484, y = 241},
+  {x = 484, y = 325},
 }
-local error = 30
+local error = 10
 
 -- DINAMICOS --
 local imagenes
 local offset 
 local rotacion
-local encontrados
 local boton_atras
 -----------------------
 -- F U N C T I O N S --
@@ -63,10 +67,10 @@ function esta_en_centro(imagen,x,y)
   local esta_dentro = false
 
   if (
-    x > imagen.x - error and
-    x < imagen.x + error and
-    y > imagen.y - error and
-    y < imagen.y + error
+    x > imagen.x - 3*error and
+    x < imagen.x + 3*error and
+    y > imagen.y - 3*error and
+    y < imagen.y + 3*error
   ) then
     esta_dentro = true
   end
@@ -82,14 +86,29 @@ function formando.load()
     x = 0,
     y = 0
   }
-  encontrados = {}
 
   local src
-  src = love.graphics.newImage( 'imagenes/figura.png' )
-  imagenes[1] = crear_imagen(src, 100, 100)
+  src = love.graphics.newImage( 'imagenes/robot1.png' )
+  imagenes[1] = crear_imagen(src, 310, 151)
 
-  src = love.graphics.newImage( 'imagenes/figura.png' )
-  imagenes[2] = crear_imagen(src, 500, 100)
+  src = love.graphics.newImage( 'imagenes/robot2.png' )
+  imagenes[2] = crear_imagen(src, 414, 224)
+
+  src = love.graphics.newImage( 'imagenes/robot3.png' )
+  imagenes[3] = crear_imagen(src, 200, 225)
+
+  src = love.graphics.newImage( 'imagenes/robot4.png' )
+  imagenes[4] = crear_imagen(src, 353, 262)
+
+  src = love.graphics.newImage( 'imagenes/robot5.png' )
+  imagenes[5] = crear_imagen(src, 267, 262)
+
+  src = love.graphics.newImage( 'imagenes/robot6.png' )
+  imagenes[6] = crear_imagen(src, 379, 368)
+
+  src = love.graphics.newImage( 'imagenes/robot7.png' )
+  imagenes[7] = crear_imagen(src, 243, 368)
+
 
   -- CREAR BOTON ATRAS
   local distancia = 50
@@ -111,7 +130,19 @@ end
 -------------
 -- D R A W --
 -------------
-function formando.draw()
+function formando.draw()  
+  
+  -- DIBUJANDO COORDENADAS
+  local distancia = 50
+  love.graphics.setLineWidth(1)
+  love.graphics.setColor(0.8,0.8,0.8)
+  for i = distancia/2, love.graphics.getWidth() - distancia/2, distancia/2 do
+    love.graphics.line(i,0,i,love.graphics.getHeight())
+  end
+  for i = distancia/2, love.graphics.getHeight() - distancia/2, distancia/2 do
+    love.graphics.line(0,i,love.graphics.getWidth(),i)
+  end
+
   love.graphics.setColor(1,1,1,1)
   for i=1, #imagenes do
     dibujar_imagen(imagenes[i])
@@ -126,12 +157,22 @@ end
 function formando.update()
   for i=1, #imagenes do
     if imagenes[i].estado == "moviendo" then
-      imagenes[i].x = love.mouse.getX() - offset.x
-      imagenes[i].y = love.mouse.getY() - offset.y
-    elseif imagenes[i].estado == "rotando" then
-      local inicio = math.atan2(offset.y, offset.x)
-      local final = math.atan2(love.mouse.getY()-imagenes[i].y, love.mouse.getX()-imagenes[i].x)
-      imagenes[i].rotacion = rotacion + final - inicio
+      local _imagen = {
+        x = imagenes[i].x,
+        y = imagenes[i].y
+      }
+      for j=1, #imagenes do
+        if math.abs(_imagen.x - imagenes[j].x) == math.abs(posiciones_respuesta[i].x - posiciones_respuesta[j].x) and
+          math.abs(_imagen.y - imagenes[j].y) == math.abs(posiciones_respuesta[i].y - posiciones_respuesta[j].y)
+        then
+          imagenes[j].x = love.mouse.getX() - offset.x - posiciones_respuesta[i].x + posiciones_respuesta[j].x
+          imagenes[j].y = love.mouse.getY() - offset.y - posiciones_respuesta[i].y + posiciones_respuesta[j].y
+        end
+      end
+    -- elseif imagenes[i].estado == "rotando" then
+    --   local inicio = math.atan2(offset.y, offset.x)
+    --   local final = math.atan2(love.mouse.getY()-imagenes[i].y, love.mouse.getX()-imagenes[i].x)
+    --   imagenes[i].rotacion = rotacion + final - inicio
     end
   end
 
@@ -181,15 +222,14 @@ function formando.mousereleased(x,y)
     imagenes[i].estado = "reposo"
   end
 
-  encontrados = {}
-
   for i=1, #imagenes do
     for j=i+1, #imagenes do
       if (
         math.abs((imagenes[i].x - imagenes[j].x) - (posiciones_respuesta[i].x - posiciones_respuesta[j].x)) < error and
         math.abs((imagenes[i].y - imagenes[j].y) - (posiciones_respuesta[i].y - posiciones_respuesta[j].y)) < error
       ) then
-        print ("true")
+        imagenes[i].x = (posiciones_respuesta[i].x - posiciones_respuesta[j].x) + imagenes[j].x
+        imagenes[i].y = (posiciones_respuesta[i].y - posiciones_respuesta[j].y) + imagenes[j].y
       end
     end
   end

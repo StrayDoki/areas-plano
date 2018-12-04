@@ -45,7 +45,48 @@ local figuras = {
     {x = 4, y = 5}  ,
     {x = 5, y = 4},
     {x = 5, y = 3},
-  }
+  },
+  zorro = {
+    {x = 3, y = 5},
+    {x = 5, y = 4},
+    {x = 6, y = 2},
+    {x = 6, y = 4},
+    {x = 7, y = 2},
+    {x = 7, y = 4},
+    {x = 7, y = 9},
+    {x = 9, y = 7},
+    {x = 9, y = 9},
+    {x = 7, y = 11},
+    {x = 5, y = 11},
+    {x = 3, y = 11},
+    {x = 5, y = 10},
+    {x = 5, y = 8},
+    {x = 3, y = 8},
+    {x = 5, y = 7},
+    {x = 5, y = 6},
+    {x = 3, y = 6},
+  },
+  conejo = {
+    {x = 3, y = 5},
+    {x = 4, y = 5},
+    {x = 3, y = 1},
+    {x = 4, y = 3},
+    {x = 5, y = 1},
+    {x = 6, y = 3},
+    {x = 5, y = 5},
+    {x = 8, y = 9},
+    {x = 8, y = 10},
+    {x = 9, y = 11},
+    {x = 8, y = 12},
+    {x = 5, y = 12},
+    {x = 3, y = 12},
+    {x = 3, y = 11},
+    {x = 5, y = 10},
+    {x = 3, y = 9},
+    {x = 5, y = 8},
+    {x = 5, y = 7},
+    {x = 3, y = 7},
+  },
 }
 local respuestas = {
   casa = {
@@ -88,6 +129,58 @@ local respuestas = {
     {
       {x = 5, y = 7},
       {x = 6, y = 7},
+    },
+  },
+  zorro = {
+    {
+      {x = 5, y = 4},
+      {x = 5, y = 6},
+    },
+    {
+      {x = 5, y = 4},
+      {x = 6, y = 4},
+    },
+    {
+      {x = 6, y = 4},
+      {x = 7, y = 4},
+    },
+    {
+      {x = 7, y = 9},
+      {x = 7, y = 11},
+    },
+    {
+      {x = 5, y = 10},
+      {x = 5, y = 11},
+    },
+    {
+      {x = 5, y = 7},
+      {x = 5, y = 8},
+    },
+  },
+  conejo = {
+    {
+      {x = 4, y = 5},
+      {x = 5, y = 5},
+    },
+    {
+      {x = 4, y = 3},
+      {x = 5, y = 5},
+    },
+    {
+      {x = 8, y = 10},
+      {x = 8, y = 12},
+    },
+    {
+      {x = 5, y = 10},
+      {x = 5, y = 12},
+    },
+    {
+      {x = 5, y = 10},
+      {x = 5, y = 8},
+    },
+    {
+      {x = 5, y = 7},
+      {x = 5, y = 5},
     },
   },
 }
@@ -171,6 +264,87 @@ local partes = {
       {x = 3, y = 9},
     },
   },
+  zorro = {
+    {
+      {x = 3, y = 5},
+      {x = 5, y = 4},
+      {x = 5, y = 6},
+      {x = 3, y = 6},
+    },
+    {
+      {x = 5, y = 4},
+      {x = 6, y = 2},
+      {x = 6, y = 4},
+    },
+    {
+      {x = 6, y = 4},
+      {x = 7, y = 2},
+      {x = 7, y = 4},
+    },
+    {
+      {x = 5, y = 4},
+      {x = 7, y = 4},
+      {x = 7, y = 11},
+      {x = 5, y = 11},
+    },
+    {
+      {x = 7, y = 9},
+      {x = 9, y = 7},
+      {x = 9, y = 9},
+      {x = 7, y = 11},
+    },
+    {
+      {x = 3, y = 11},
+      {x = 5, y = 10},
+      {x = 5, y = 11},
+    },
+    {
+      {x = 3, y = 8},
+      {x = 5, y = 7},
+      {x = 5, y = 8},
+    },
+  },
+  conejo = {
+    {
+      {x = 3, y = 5},
+      {x = 5, y = 5},
+      {x = 5, y = 7},
+      {x = 3, y = 7},
+    },
+    {
+      {x = 4, y = 5},
+      {x = 3, y = 1},
+      {x = 5, y = 5},
+    },
+    {
+      {x = 4, y = 3},
+      {x = 5, y = 1},
+      {x = 6, y = 3},
+      {x = 5, y = 5},
+    },
+    {
+      {x = 5, y = 5},
+      {x = 8, y = 9},
+      {x = 8, y = 12},
+      {x = 5, y = 12},
+    },
+    {
+      {x = 8, y = 10},
+      {x = 9, y = 11},
+      {x = 8, y = 12},
+    },
+    {
+      {x = 3, y = 11},
+      {x = 5, y = 10},
+      {x = 5, y = 12},
+      {x = 3, y = 12},
+    },
+    {
+      {x = 3, y = 9},
+      {x = 5, y = 8},
+      {x = 5, y = 10},
+    },
+  },
 }
 local condiciones = {
   casa = {
@@ -191,7 +365,25 @@ local condiciones = {
     {2,3},
     {3,4},
     {4},
-  }
+  },
+  zorro = {
+    {1},
+    {2},
+    {3},
+    {1,2,3,4,5,6},
+    {4},
+    {5},
+    {6}
+  },
+  conejo = {
+    {1,6},
+    {1,2},
+    {2},
+    {3,4,5,6},
+    {3},
+    {4},
+    {5},
+  },
 }
 local colores_partes = {
   {1,0,0,0.3},
@@ -418,11 +610,23 @@ function dividiendo.mousepressed(x,y)
       condicion_actual = condiciones.gato
       partes_actuales = partes.gato
     elseif figura_actual == "gato" then
-      figural_actual = "barco"
+      figura_actual = "barco"
       puntos = figuras.barco
       respuesta_actual = respuestas.barco
       condicion_actual = condiciones.barco
       partes_actuales = partes.barco
+    elseif figura_actual == "barco" then
+      figura_actual = "zorro"
+      puntos = figuras.zorro
+      respuesta_actual = respuestas.zorro
+      condicion_actual = condiciones.zorro
+      partes_actuales = partes.zorro
+    elseif figura_actual == "zorro" then
+      figura_actual = "conejo"
+      puntos = figuras.conejo
+      respuesta_actual = respuestas.conejo
+      condicion_actual = condiciones.conejo
+      partes_actuales = partes.conejo
     end
   end
 
