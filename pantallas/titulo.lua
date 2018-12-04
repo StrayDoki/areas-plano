@@ -5,7 +5,7 @@ titulo = {}
 
 local cadena = {
   titulo = [[AREAS DE FIGURAS EN EL PLANO]],
-  autor = [[Profesor Arturo Sotelo Linares]]
+  autor = [[Sotelo Yeison & Gutierrez Shirley]]
 }
 
 local cfg = {

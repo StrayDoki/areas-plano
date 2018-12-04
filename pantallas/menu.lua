@@ -3,6 +3,7 @@
 ---------------
 require('pantallas/buscando_alturas')
 require('pantallas/areas_coordenadas')
+require('pantallas/dividiendo')
 require('pantallas/formando')
 
 require('clases/texto')
@@ -26,8 +27,8 @@ local cfg = {
 local opciones = {
   {"Buscando alturas", buscando_alturas},
   {"Areas", areas_coordenadas},
-  {"Formando", formando},
-  {"No", menu}
+  {"Dividiendo", dividiendo},
+  {"Formando", formando}
 }
 
 local botones

@@ -212,6 +212,26 @@ end
 -- UPDATE --
 ------------
 function buscando_alturas.update(dt)
+  if estado == "dibujando" then
+    -- Creando nuevo punto
+    local nuevo_punto = {
+      x = love.mouse.getX(),
+      y = love.mouse.getY()
+    }
+
+    if calcular_distancia(nuevo_punto.x,nuevo_punto.y,vertice.x,vertice.y) < cfg.distancia_minima then
+      nuevo_punto.x = vertice.x
+      nuevo_punto.y = vertice.y
+    end
+
+    if calcular_distancia(nuevo_punto.x,nuevo_punto.y,altura.x, altura.y) < cfg.distancia_minima then
+      nuevo_punto.x = altura.x
+      nuevo_punto.y = altura.y
+    end
+
+    puntos[2] = nuevo_punto
+  end
+
   --ACTUALIZA BOTON
   boton_atras.update(love.mouse.getX(), love.mouse.getY())
 end
@@ -238,38 +258,13 @@ function buscando_alturas.mousepressed(x,y)
       nuevo_punto.y = altura.y
     end
 
-    if #puntos == 2 then
-      puntos = {} -- si hay dos puntos, empieza de nuevo
-    end
+    puntos = {} -- borra lo anterior
 
-    puntos[#puntos + 1] = nuevo_punto
+    puntos[1] = nuevo_punto
+    puntos[2] = nuevo_punto
 
-    if #puntos == 2 then
-      -- si los puntos estan al reves, los intercambia
-      if puntos[2].x == vertice.x and puntos[2].y == vertice.y and
-      puntos[1].x == altura.x and puntos[1].y == altura.y then
-        local temporal = puntos[2]
-        puntos[2] = puntos [1]
-        puntos[1] = temporal
-      end
+    estado = "dibujando"
 
-      --verifica si es la altura correcta
-      if
-      (puntos[1].x == vertice.x and puntos[1].y == vertice.y and
-      puntos[2].x == altura.x and puntos[2].y == altura.y)
-      then
-        -- CORRECTO!
-        mensaje = cfg.texto.correcto --y cambia el texto
-        color_caja_fondo = cfg.color.caja.correcto.fondo
-        color_caja_texto = cfg.color.caja.correcto.texto
-        estado = "correcto"
-      else
-        -- INCORRECTO!
-        mensaje = cfg.texto.incorrecto --cambia el texto
-        color_caja_fondo = cfg.color.caja.incorrecto.fondo
-        color_caja_texto = cfg.color.caja.incorrecto.texto
-      end
-    end
   elseif estado == "correcto" then
     if triangulo_actual == #triangulos then
       -- FELICITACIONES
@@ -305,6 +300,39 @@ function buscando_alturas.mousepressed(x,y)
   -- SI SE PRESIONA EL BOTON ATRAS
   if boton_atras.estaSeleccionado(x,y) then
     cambiarPantalla(menu)
+  end
+end
+
+--------------------
+-- MOUSE RELEASED --
+--------------------
+function buscando_alturas.mousereleased(x,y)
+  if estado == "dibujando" then
+  -- si los puntos estan al reves, los intercambia
+    if puntos[2].x == vertice.x and puntos[2].y == vertice.y and
+    puntos[1].x == altura.x and puntos[1].y == altura.y then
+      local temporal = puntos[2]
+      puntos[2] = puntos [1]
+      puntos[1] = temporal
+    end
+
+    --verifica si es la altura correcta
+    if
+    (puntos[1].x == vertice.x and puntos[1].y == vertice.y and
+    puntos[2].x == altura.x and puntos[2].y == altura.y)
+    then
+      -- CORRECTO!
+      mensaje = cfg.texto.correcto --y cambia el texto
+      color_caja_fondo = cfg.color.caja.correcto.fondo
+      color_caja_texto = cfg.color.caja.correcto.texto
+      estado = "correcto"
+    else
+      -- INCORRECTO!
+      mensaje = cfg.texto.incorrecto --cambia el texto
+      color_caja_fondo = cfg.color.caja.incorrecto.fondo
+      color_caja_texto = cfg.color.caja.incorrecto.texto
+      estado = "pregunta"
+    end
   end
 end
 

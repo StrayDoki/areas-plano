@@ -2,36 +2,68 @@ areas_coordenadas = {}
 
 -- ESTATICOS --
 local puntos_iniciales = {
+  triangulo = {
+    {x = 2, y = 10},
+    {x = 8, y = 3},
+    {x = 12, y = 10},
+  },
   cuadrilatero = {
     {x = 2, y = 10},
     {x = 4, y = 2},
     {x = 8, y = 3},
-    {x = 11, y = 10},
-    {x= 5, y=5}
+    {x = 12, y = 10},
   }
 }
 local distancia = 50
 local radio_punto = 5
 
 -- DINAMICOS --
-local figura_inicial
+local figura_actual
 local puntos
 local lineas
 local area
+local boton_triangulo
+local boton_cuadrilatero
 local boton_atras
 
 function areas_coordenadas.load()
+
   puntos = {}
-  figura_inicial = "cuadrilatero"
+  figura_actual = "triangulo"
   
   -- CREANDO PUNTOS INICIALES
-  for i = 1, #puntos_iniciales.cuadrilatero do
-    puntos[i] = puntos_iniciales.cuadrilatero[i]
+  for i = 1, #puntos_iniciales.triangulo do
+    puntos[i] = puntos_iniciales.triangulo[i]
     puntos[i].estado = "reposo"
   end
 
   -- CALCULANDO AREA
   area = calcular_area()  
+
+  -- CREANDO BOTONES
+  boton_triangulo = crearBoton(
+    16 * distancia,
+    4 * distancia,
+    3 * distancia,
+    2 * distancia,
+    {1,0.2,0.2},
+    "TRIANGULO",
+    18,
+    {1,1,1},
+    4
+  )
+
+  boton_cuadrilatero = crearBoton(
+    16 * distancia,
+    7 * distancia,
+    3 * distancia,
+    2 * distancia,
+    {0.2,0.2,1},
+    "CUADRILATERO",
+    18,
+    {1,1,1},
+    4
+  )
 
   -- CREANDO BOTON
   local boton_ancho = distancia*3
@@ -61,6 +93,8 @@ function areas_coordenadas.draw()
   end
 
   -- DIBUJANDO BOTON
+  boton_triangulo.draw()
+  boton_cuadrilatero.draw()
   boton_atras.draw()
   
   -- DIBUJANDO POLÍGONO
@@ -101,6 +135,8 @@ function areas_coordenadas.update(dt)
   end
 
   -- BOTON CAMBIA DE COLOR SI ESTA SELECCIONADO
+  boton_triangulo.update(love.mouse.getX(), love.mouse.getY())
+  boton_cuadrilatero.update(love.mouse.getX(), love.mouse.getY())
   boton_atras.update(love.mouse.getX(), love.mouse.getY())
 end
 
@@ -117,7 +153,33 @@ function areas_coordenadas.mousepressed(x,y)
     end 
   end
 
-  if boton_atras.estaSeleccionado then
+  if boton_triangulo.estaSeleccionado(x,y) then
+    puntos = {}
+    figura_actual = "triangulo"
+    
+    -- CREANDO PUNTOS INICIALES
+    for i = 1, #puntos_iniciales.triangulo do
+      puntos[i] = puntos_iniciales.triangulo[i]
+      puntos[i].estado = "reposo"
+    end
+
+    area = calcular_area()  
+  end
+
+  if boton_cuadrilatero.estaSeleccionado(x,y) then
+    puntos = {}
+    figura_actual = "cuadrilatero"
+    
+    -- CREANDO PUNTOS INICIALES
+    for i = 1, #puntos_iniciales.cuadrilatero do
+      puntos[i] = puntos_iniciales.cuadrilatero[i]
+      puntos[i].estado = "reposo"
+    end
+
+    area = calcular_area()  
+  end
+
+  if boton_atras.estaSeleccionado(x,y) then
     cambiarPantalla(menu)
   end
 end
